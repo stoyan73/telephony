@@ -1,6 +1,6 @@
 defmodule Telephony.Core.PrepaidTest do
   use ExUnit.Case
-  alias Telephony.Core.{Call, Constants, Prepaid, Recharge, Subscriber}
+  alias Telephony.Core.{Call, Constants, Invoice, Prepaid, Recharge, Subscriber}
 
   setup do
     subscriber =
@@ -59,7 +59,6 @@ defmodule Telephony.Core.PrepaidTest do
     value = 100
     # When
     result = Prepaid.make_recharge(subscriber, value, date)
-    IO.inspect(result)
     # Then
     expect = %Subscriber{
       full_name: "Stoyan",
@@ -70,6 +69,99 @@ defmodule Telephony.Core.PrepaidTest do
           %Recharge{value: value, date: date}
         ]
       }
+    }
+
+    # finall
+    assert expect == result
+  end
+
+  test "print invoice" do
+    # given
+    start_date = ~D[2023-12-15]
+    end_date = ~D[2024-01-15]
+
+    subscriber = %Subscriber{
+      full_name: "Stoyan",
+      phone_number: "0887229884",
+      subscriber_type: %Prepaid{
+        credits: 93.45,
+        recharges: [
+          %Recharge{value: 50, date: ~D[2023-12-16]},
+          %Recharge{value: 50, date: ~D[2023-12-25]},
+          %Recharge{value: 50, date: ~D[2023-12-30]}
+        ]
+      },
+      calls: [
+        %Call{
+          time_spent: 2,
+          date: ~D[2023-12-16]
+        },
+        %Call{
+          time_spent: 1,
+          date: ~D[2023-12-16]
+        },
+        %Call{
+          time_spent: 1,
+          date: ~D[2023-12-17]
+        },
+        %Call{
+          time_spent: 5,
+          date: ~D[2023-12-18]
+        },
+        %Call{
+          time_spent: 20,
+          date: ~D[2023-12-19]
+        },
+        %Call{
+          time_spent: 10,
+          date: ~D[2023-12-29]
+        }
+      ]
+    }
+
+    result = Invoice.print(subscriber, start_date, end_date)
+
+    expect = %Invoice{
+      calls: [
+        %{
+          time_spent: 2,
+          value_spent: 2.9,
+          date: ~D[2023-12-16]
+        },
+        %{
+          time_spent: 1,
+          value_spent: 1.45,
+          date: ~D[2023-12-16]
+        },
+        %{
+          time_spent: 1,
+          value_spent: 1.45,
+          date: ~D[2023-12-17]
+        },
+        %{
+          time_spent: 5,
+          value_spent: 7.25,
+          date: ~D[2023-12-18]
+        },
+        %{
+          time_spent: 20,
+          value_spent: 29.0,
+          date: ~D[2023-12-19]
+        },
+        %{
+          time_spent: 10,
+          value_spent: 14.50,
+          date: ~D[2023-12-29]
+        }
+      ],
+      recharges: [
+        %Recharge{value: 50, date: ~D[2023-12-16]},
+        %Recharge{value: 50, date: ~D[2023-12-25]},
+        %Recharge{value: 50, date: ~D[2023-12-30]}
+      ],
+      total_value: 56.55,
+      total_credis: 150,
+      remaining_credits: 93.45
     }
 
     # finall

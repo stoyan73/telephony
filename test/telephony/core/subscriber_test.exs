@@ -1,6 +1,6 @@
 defmodule Telephony.Core.SubscriberTest do
   use ExUnit.Case
-  alias Telephony.Core.{Call, Constants, Prepaid, Postpaid, Recharge, Subscriber}
+  alias Telephony.Core.{Call, Constants, Postpaid, Prepaid, Recharge, Subscriber}
 
   setup do
     postpaid =
@@ -31,7 +31,6 @@ defmodule Telephony.Core.SubscriberTest do
 
     # When
     result = Subscriber.new(payload)
-    IO.inspect(result)
     # Then
     expect = %Subscriber{
       full_name: "Stoyan",
@@ -77,7 +76,7 @@ defmodule Telephony.Core.SubscriberTest do
     time_spent = 2
     # When
     result = Subscriber.make_a_call(prepaid, time_spent, date)
-    IO.inspect(result)
+
     # Then
     expect = %Subscriber{
       full_name: "Stoyan2",
@@ -128,7 +127,7 @@ defmodule Telephony.Core.SubscriberTest do
     value = 100
     # When
     result = Subscriber.make_recharge(postpaid, value, date)
-    IO.inspect(result)
+
     # Then
     expect = {:error, Constants.error_prepaid_recharge()}
 
@@ -144,7 +143,7 @@ defmodule Telephony.Core.SubscriberTest do
     time_spent = 10
     # When
     result = Subscriber.make_a_call(prepaid, time_spent, date)
-    IO.inspect(result)
+
     # Then
     expect = {:error, Constants.error_not_enough_credits()}
     # finall

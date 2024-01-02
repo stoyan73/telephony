@@ -21,7 +21,6 @@ defmodule Telephony.Core.PostpaidTest do
     time_spent = 10
     # When
     result = Postpaid.make_a_call(subscriber, time_spent, date)
-    IO.inspect(result)
     # Then
     expect = %Subscriber{
       full_name: "Stoyan",

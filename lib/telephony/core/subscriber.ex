@@ -15,7 +15,6 @@ defmodule Telephony.Core.Subscriber do
 
   def make_a_call(%{subscriber_type: %Postpaid{}} = subscriber, time_spent, date) do
     # when subscriber_type.__struct__ == Postpaid do
-    IO.inspect("Postpaid call")
     Postpaid.make_a_call(subscriber, time_spent, date)
   end
 
@@ -25,7 +24,6 @@ defmodule Telephony.Core.Subscriber do
         date
       ) do
     # when subscriber_type.__struct__ == Prepaid do
-    IO.inspect("Prepaid call")
     Prepaid.make_a_call(subscriber, time_spent, date)
   end
 
@@ -35,12 +33,11 @@ defmodule Telephony.Core.Subscriber do
         date
       ) do
     # when subscriber_type.__struct__ == Prepaid do
-    IO.inspect("Prepaid make recharge")
+
     Prepaid.make_recharge(subscriber, value, date)
   end
 
   def make_recharge(_, _, _) do
-    IO.inspect("Not a prepaid subscriber make recharge")
     {:error, Constants.error_prepaid_recharge()}
   end
 end
