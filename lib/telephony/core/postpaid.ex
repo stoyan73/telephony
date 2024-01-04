@@ -1,5 +1,7 @@
 defmodule Telephony.Core.Postpaid do
+  @moduledoc false
   alias Telephony.Core.Call
+
   defstruct spent: 0
 
   @price_per_minute 0.45

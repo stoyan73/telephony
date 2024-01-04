@@ -1,6 +1,12 @@
 defmodule Telephony.Core.PrepaidTest do
   use ExUnit.Case
-  alias Telephony.Core.{Call, Constants, Invoice, Prepaid, Recharge, Subscriber}
+
+  alias Telephony.Core.Call
+  alias Telephony.Core.Constants
+  alias Telephony.Core.Invoice
+  alias Telephony.Core.Prepaid
+  alias Telephony.Core.Recharge
+  alias Telephony.Core.Subscriber
 
   setup do
     subscriber =

@@ -1,5 +1,8 @@
 defmodule Telephony.Core.Subscriber do
-  alias Telephony.Core.{Constants, Prepaid, Postpaid}
+  @moduledoc false
+  alias Telephony.Core.Constants
+  alias Telephony.Core.Postpaid
+  alias Telephony.Core.Prepaid
 
   defstruct full_name: nil, phone_number: nil, subscriber_type: nil, calls: []
 
@@ -18,20 +21,12 @@ defmodule Telephony.Core.Subscriber do
     Postpaid.make_a_call(subscriber, time_spent, date)
   end
 
-  def make_a_call(
-        %{subscriber_type: %Prepaid{}} = subscriber,
-        time_spent,
-        date
-      ) do
+  def make_a_call(%{subscriber_type: %Prepaid{}} = subscriber, time_spent, date) do
     # when subscriber_type.__struct__ == Prepaid do
     Prepaid.make_a_call(subscriber, time_spent, date)
   end
 
-  def make_recharge(
-        %{subscriber_type: %Prepaid{}} = subscriber,
-        value,
-        date
-      ) do
+  def make_recharge(%{subscriber_type: %Prepaid{}} = subscriber, value, date) do
     # when subscriber_type.__struct__ == Prepaid do
 
     Prepaid.make_recharge(subscriber, value, date)
