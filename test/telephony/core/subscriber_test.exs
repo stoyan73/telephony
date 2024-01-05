@@ -48,7 +48,7 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
+ 
   test "make a postpaid call", %{postpaid: postpaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -56,7 +56,7 @@ defmodule Telephony.Core.SubscriberTest do
     time_spent = 10
     # When
     result = Subscriber.make_a_call(postpaid, time_spent, date)
-    IO.inspect(result)
+
     # Then
     expect = %Subscriber{
       full_name: "Stoyan",
@@ -74,7 +74,7 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
+
   test "make a prepaid call", %{prepaid: prepaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -100,7 +100,7 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
+
   test "make a recharge", %{prepaid: prepaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -108,7 +108,7 @@ defmodule Telephony.Core.SubscriberTest do
     value = 100
     # When
     result = Subscriber.make_recharge(prepaid, value, date)
-    IO.inspect(result)
+
     # Then
     expect = %Subscriber{
       full_name: "Stoyan2",
@@ -125,7 +125,7 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
+
   test "make recharge error ", %{postpaid: postpaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -141,7 +141,7 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
+
   test "not enough credits", %{prepaid: prepaid} do
     # Given
     date = NaiveDateTime.utc_now()

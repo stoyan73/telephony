@@ -3,7 +3,6 @@ defmodule Telephony.Core.PrepaidTest do
 
   alias Telephony.Core.Call
   alias Telephony.Core.Constants
-  alias Telephony.Core.Invoice
   alias Telephony.Core.Prepaid
   alias Telephony.Core.Recharge
   alias Telephony.Core.Subscriber
@@ -26,7 +25,6 @@ defmodule Telephony.Core.PrepaidTest do
     time_spent = 2
     # When
     result = Prepaid.make_a_call(subscriber, time_spent, date)
-    IO.inspect(result)
     # Then
     expect = %Subscriber{
       full_name: "Stoyan",
@@ -51,7 +49,6 @@ defmodule Telephony.Core.PrepaidTest do
     time_spent = 10
     # When
     result = Prepaid.make_a_call(subscriber, time_spent, date)
-    IO.inspect(result)
     # Then
     expect = {:error, Constants.error_not_enough_credits()}
     # finall
@@ -81,6 +78,7 @@ defmodule Telephony.Core.PrepaidTest do
     assert expect == result
   end
 
+  @tag run: true
   test "print invoice" do
     # given
     start_date = ~D[2023-12-15]
@@ -125,9 +123,11 @@ defmodule Telephony.Core.PrepaidTest do
       ]
     }
 
-    result = Invoice.print(subscriber, start_date, end_date)
+    subscriber_type = subscriber.subscriber_type
+    calls = subscriber.calls
+    result = Invoice.print(subscriber_type, calls, start_date, end_date)
 
-    expect = %Invoice{
+    expect = %{
       calls: [
         %{
           time_spent: 2,
@@ -166,7 +166,7 @@ defmodule Telephony.Core.PrepaidTest do
         %Recharge{value: 50, date: ~D[2023-12-30]}
       ],
       total_value: 56.55,
-      total_credis: 150,
+      total_credits: 150,
       remaining_credits: 93.45
     }
 

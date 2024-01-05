@@ -9,7 +9,7 @@ defmodule Telephony.Core.Prepaid do
   @price_per_minute 1.45
 
   def make_a_call(subscriber, time_spent, date) do
-    if is_subscriber_has_credits(subscriber, time_spent) do
+    if is_subscriber_has_credits?(subscriber, time_spent) do
       subscriber
       |> update_subcriber_type(time_spent)
       |> add_new_call(time_spent, date)
@@ -18,7 +18,7 @@ defmodule Telephony.Core.Prepaid do
     end
   end
 
-  defp is_subscriber_has_credits(%{subscriber_type: subscriber_type}, time_spent) do
+  defp is_subscriber_has_credits?(%{subscriber_type: subscriber_type}, time_spent) do
     subscriber_type.credits >= time_spent * @price_per_minute
   end
 
@@ -49,5 +49,35 @@ defmodule Telephony.Core.Prepaid do
     }
 
     %{subscriber | subscriber_type: subscriber_type}
+  end
+
+  defimpl Invoice, for: __MODULE__ do
+    @price_per_minute 1.45
+    def print(%{recharges: recharges}, calls, start_date, end_date) do
+      recharges = Enum.filter(recharges, &(Date.diff(start_date, &1.date) <= 0 and Date.diff(&1.date, end_date) <= 0))
+      total_credits = Enum.reduce(recharges, 0, fn recharge, acc -> acc + recharge.value end)
+
+      calls =
+        Enum.reduce(calls, [], fn call, acc ->
+          if Date.diff(start_date, call.date) <= 0 and Date.diff(call.date, end_date) <= 0 do
+            value = call.time_spent * @price_per_minute
+
+            call = %{date: call.date, time_spent: call.time_spent, value_spent: value}
+            acc ++ [call]
+          else
+            acc
+          end
+        end)
+
+      total_value = Enum.reduce(calls, 0, fn call, acc -> acc + call.value_spent end)
+
+      %{
+        recharges: recharges,
+        calls: calls,
+        total_value: total_value,
+        remaining_credits: total_credits - total_value,
+        total_credits: total_credits
+      }
+    end
   end
 end
