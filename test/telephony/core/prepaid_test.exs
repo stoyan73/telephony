@@ -5,11 +5,10 @@ defmodule Telephony.Core.PrepaidTest do
   alias Telephony.Core.Constants
   alias Telephony.Core.Prepaid
   alias Telephony.Core.Recharge
-  alias Telephony.Core.Subscriber
 
   setup do
     subscriber =
-      %Subscriber{
+      %Telephony.Core.Subscriber{
         full_name: "Stoyan",
         phone_number: "0887229884",
         subscriber_type: %Prepaid{credits: 10, recharges: []}
@@ -18,37 +17,32 @@ defmodule Telephony.Core.PrepaidTest do
     %{subscriber: subscriber}
   end
 
-  test "make a call", %{subscriber: subscriber} do
+  @tag run: true
+  test "make a prepaid call", %{subscriber: subscriber} do
     # Given
     date = NaiveDateTime.utc_now()
     # im minutes
     time_spent = 2
     # When
-    result = Prepaid.make_a_call(subscriber, time_spent, date)
+
+    result = Subscriber.make_a_call(subscriber.subscriber_type, time_spent, date)
+
     # Then
-    expect = %Subscriber{
-      full_name: "Stoyan",
-      phone_number: "0887229884",
-      subscriber_type: %Prepaid{credits: 7.1, recharges: []},
-      calls: [
-        %Call{
-          time_spent: time_spent,
-          date: date
-        }
-      ]
-    }
+    expect = {%Telephony.Core.Prepaid{credits: 7.1, recharges: []}, %Telephony.Core.Call{time_spent: 2, date: date}}
 
     # finall
     assert expect == result
   end
 
+  @tag run: true
   test "not enough credits", %{subscriber: subscriber} do
     # Given
     date = NaiveDateTime.utc_now()
     # im minutes
     time_spent = 10
     # When
-    result = Prepaid.make_a_call(subscriber, time_spent, date)
+    subscriber_type = subscriber.subscriber_type
+    result = Subscriber.make_a_call(subscriber_type, time_spent, date)
     # Then
     expect = {:error, Constants.error_not_enough_credits()}
     # finall
@@ -63,7 +57,7 @@ defmodule Telephony.Core.PrepaidTest do
     # When
     result = Prepaid.make_recharge(subscriber, value, date)
     # Then
-    expect = %Subscriber{
+    expect = %Telephony.Core.Subscriber{
       full_name: "Stoyan",
       phone_number: "0887229884",
       subscriber_type: %Prepaid{
@@ -84,7 +78,7 @@ defmodule Telephony.Core.PrepaidTest do
     start_date = ~D[2023-12-15]
     end_date = ~D[2024-01-15]
 
-    subscriber = %Subscriber{
+    subscriber = %Telephony.Core.Subscriber{
       full_name: "Stoyan",
       phone_number: "0887229884",
       subscriber_type: %Prepaid{
@@ -125,7 +119,7 @@ defmodule Telephony.Core.PrepaidTest do
 
     subscriber_type = subscriber.subscriber_type
     calls = subscriber.calls
-    result = Invoice.print(subscriber_type, calls, start_date, end_date)
+    result = Subscriber.print_invoice(subscriber_type, calls, start_date, end_date)
 
     expect = %{
       calls: [

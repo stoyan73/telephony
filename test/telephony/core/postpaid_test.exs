@@ -3,11 +3,10 @@ defmodule Telephony.Core.PostpaidTest do
 
   alias Telephony.Core.Call
   alias Telephony.Core.Postpaid
-  alias Telephony.Core.Subscriber
 
   setup do
     subscriber =
-      %Subscriber{
+      %Telephony.Core.Subscriber{
         full_name: "Stoyan",
         phone_number: "0887229884",
         subscriber_type: %Postpaid{spent: 0}
@@ -16,26 +15,18 @@ defmodule Telephony.Core.PostpaidTest do
     %{subscriber: subscriber}
   end
 
-  @tag run: false
-  test "make a call", %{subscriber: subscriber} do
+  @tag run: true
+  test "make a postpaid call", %{subscriber: subscriber} do
     # Given
     date = NaiveDateTime.utc_now()
     # im minutes
     time_spent = 10
     # When
-    result = Postpaid.make_a_call(subscriber, time_spent, date)
+    result = Subscriber.make_a_call(subscriber.subscriber_type, time_spent, date)
+
     # Then
-    expect = %Subscriber{
-      full_name: "Stoyan",
-      phone_number: "0887229884",
-      subscriber_type: %Postpaid{spent: 4.5},
-      calls: [
-        %Call{
-          time_spent: time_spent,
-          date: date
-        }
-      ]
-    }
+    expect =
+      {%Telephony.Core.Postpaid{spent: 4.5}, %Telephony.Core.Call{time_spent: 10, date: date}}
 
     # finall
     assert expect == result
@@ -48,7 +39,7 @@ defmodule Telephony.Core.PostpaidTest do
     end_date = ~D[2024-01-15]
     # im minutes
 
-    subscriber = %Subscriber{
+    subscriber = %Telephony.Core.Subscriber{
       full_name: "Stoyan",
       phone_number: "0887229884",
       subscriber_type: %Postpaid{spent: 56.55},
@@ -83,7 +74,7 @@ defmodule Telephony.Core.PostpaidTest do
     subscriber_type = subscriber.subscriber_type
     calls = subscriber.calls
     # When
-    result = Invoice.print(subscriber_type, calls, start_date, end_date)
+    result = Subscriber.print_invoice(subscriber_type, calls, start_date, end_date)
     # Then
     expect = %{
       calls: [

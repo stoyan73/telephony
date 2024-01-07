@@ -1,3 +1,11 @@
+defprotocol Subscriber do
+  @moduledoc """
+  Defining protocol for Subscriber
+  """
+  def print_invoice(subscriber_type, calls, start_date, end_date)
+  def make_a_call(subscriber_type, time_spent, date)
+end
+
 defmodule Telephony.Core.Subscriber do
   @moduledoc false
   alias Telephony.Core.Constants
@@ -14,16 +22,6 @@ defmodule Telephony.Core.Subscriber do
   def new(%{subscriber_type: :postpaid} = payload) do
     payload = %{payload | subscriber_type: %Postpaid{}}
     struct(__MODULE__, payload)
-  end
-
-  def make_a_call(%{subscriber_type: %Postpaid{}} = subscriber, time_spent, date) do
-    # when subscriber_type.__struct__ == Postpaid do
-    Postpaid.make_a_call(subscriber, time_spent, date)
-  end
-
-  def make_a_call(%{subscriber_type: %Prepaid{}} = subscriber, time_spent, date) do
-    # when subscriber_type.__struct__ == Prepaid do
-    Prepaid.make_a_call(subscriber, time_spent, date)
   end
 
   def make_recharge(%{subscriber_type: %Prepaid{}} = subscriber, value, date) do
