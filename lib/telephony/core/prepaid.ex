@@ -8,21 +8,6 @@ defmodule Telephony.Core.Prepaid do
   defstruct credits: 0, recharges: []
 
   # -------------------
-  def make_recharge(subscriber, value, date) do
-    update_credits(subscriber, value, date)
-  end
-
-  defp update_credits(%{subscriber_type: subscriber_type} = subscriber, value, date) do
-    rechardge = Recharge.new(value, date)
-
-    subscriber_type = %{
-      subscriber_type
-      | recharges: subscriber_type.recharges ++ [rechardge],
-        credits: subscriber_type.credits + value
-    }
-
-    %{subscriber | subscriber_type: subscriber_type}
-  end
 
   defimpl Subscriber, for: __MODULE__ do
     @price_per_minute 1.45
@@ -61,6 +46,22 @@ defmodule Telephony.Core.Prepaid do
       else
         {:error, Constants.error_not_enough_credits()}
       end
+    end
+
+    def make_a_recharge(subscriber_type, value, date) do
+      update_credits(subscriber_type, value, date)
+    end
+
+    defp update_credits(subscriber_type, value, date) do
+      rechardge = Recharge.new(value, date)
+
+      subscriber_type = %{
+        subscriber_type
+        | recharges: subscriber_type.recharges ++ [rechardge],
+          credits: subscriber_type.credits + value
+      }
+
+      %{subscriber_type: subscriber_type}
     end
 
     defp is_subscriber_has_credits?(subscriber_type, time_spent) do

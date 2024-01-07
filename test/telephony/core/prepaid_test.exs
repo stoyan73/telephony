@@ -28,7 +28,7 @@ defmodule Telephony.Core.PrepaidTest do
     result = Subscriber.make_a_call(subscriber.subscriber_type, time_spent, date)
 
     # Then
-    expect = {%Telephony.Core.Prepaid{credits: 7.1, recharges: []}, %Telephony.Core.Call{time_spent: 2, date: date}}
+    expect = {%Prepaid{credits: 7.1, recharges: []}, %Call{time_spent: 2, date: date}}
 
     # finall
     assert expect == result
@@ -49,21 +49,23 @@ defmodule Telephony.Core.PrepaidTest do
     assert expect == result
   end
 
+  @tag run: true
   test "make a recharge", %{subscriber: subscriber} do
     # Given
     date = NaiveDateTime.utc_now()
     # im minutes
     value = 100
     # When
-    result = Prepaid.make_recharge(subscriber, value, date)
+    result = Subscriber.make_a_recharge(subscriber.subscriber_type, value, date)
     # Then
-    expect = %Telephony.Core.Subscriber{
-      full_name: "Stoyan",
-      phone_number: "0887229884",
-      subscriber_type: %Prepaid{
+    expect = %{
+      subscriber_type: %Telephony.Core.Prepaid{
         credits: 110,
         recharges: [
-          %Recharge{value: value, date: date}
+          %Recharge{
+            date: date,
+            value: 100
+          }
         ]
       }
     }

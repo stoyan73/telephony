@@ -2,6 +2,7 @@ defmodule Telephony.Core.PostpaidTest do
   use ExUnit.Case
 
   alias Telephony.Core.Call
+  alias Telephony.Core.Constants
   alias Telephony.Core.Postpaid
 
   setup do
@@ -27,6 +28,21 @@ defmodule Telephony.Core.PostpaidTest do
     # Then
     expect =
       {%Telephony.Core.Postpaid{spent: 4.5}, %Telephony.Core.Call{time_spent: 10, date: date}}
+
+    # finall
+    assert expect == result
+  end
+
+  @tag run: true
+  test "make a recharge" do
+    # Given
+    date = NaiveDateTime.utc_now()
+    subscriber_type = %Postpaid{spent: 10}
+    value = 100
+    # When
+    result = Subscriber.make_a_recharge(subscriber_type, value, date)
+    # Then
+    expect = {:error, Constants.error_prepaid_recharge()}
 
     # finall
     assert expect == result

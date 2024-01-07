@@ -1,6 +1,7 @@
 defmodule Telephony.Core.Postpaid do
   @moduledoc false
   alias Telephony.Core.Call
+  alias Telephony.Core.Constants
 
   defstruct spent: 0
 
@@ -31,6 +32,10 @@ defmodule Telephony.Core.Postpaid do
       subscriber_type
       |> update_subcriber_type(time_spent)
       |> add_new_call(time_spent, date)
+    end
+
+    def make_a_recharge(_, _, _) do
+      {:error, Constants.error_prepaid_recharge()}
     end
 
     defp update_subcriber_type(subscriber_type, time_spent) do
