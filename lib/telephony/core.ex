@@ -1,10 +1,10 @@
 defmodule Telephony.Core do
-  alias __MODULE__.Subscriber
-  alias __MODULE__.Constants
-
   @moduledoc """
   Create new subscriber and add it to the list
   """
+  alias __MODULE__.Constants
+  alias __MODULE__.Subscriber
+
   @spec create_new_subscriber(list(Subscriber.__struct__()), map()) ::
           {:ok, list(Subscriber.__struct__())} | :error
   def create_new_subscriber(subscribers, %{subscriber_type: subscriber_type} = payload)

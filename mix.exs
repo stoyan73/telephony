@@ -22,6 +22,7 @@ defmodule Telephony.MixProject do
   defp deps do
     [
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:styler, "~> 0.11.1", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.18", only: :test},
       {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
