@@ -53,7 +53,7 @@ defmodule Telephony.Core.Prepaid do
 
   defimpl Invoice, for: __MODULE__ do
     @price_per_minute 1.45
-    def print(%{recharges: recharges}, calls, start_date, end_date) do
+    def print(%{recharges: recharges} = _subscriber_type, calls, start_date, end_date) do
       recharges = Enum.filter(recharges, &(Date.diff(start_date, &1.date) <= 0 and Date.diff(&1.date, end_date) <= 0))
       total_credits = Enum.reduce(recharges, 0, fn recharge, acc -> acc + recharge.value end)
 

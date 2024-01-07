@@ -22,4 +22,28 @@ defmodule Telephony.Core.Postpaid do
     call = Call.new(time_spent, date)
     %{subscriber | calls: subscriber.calls ++ [call]}
   end
+
+  defimpl Invoice, for: __MODULE__ do
+    @price_per_minute 0.45
+    def print(_subdctiber_type, calls, start_date, end_date) do
+      calls =
+        Enum.reduce(calls, [], fn call, acc ->
+          if Date.diff(start_date, call.date) <= 0 and Date.diff(call.date, end_date) <= 0 do
+            value = call.time_spent * @price_per_minute
+
+            call = %{date: call.date, time_spent: call.time_spent, value_spent: value}
+            acc ++ [call]
+          else
+            acc
+          end
+        end)
+
+      total_value = Enum.reduce(calls, 0, fn call, acc -> acc + call.value_spent end)
+
+      %{
+        calls: calls,
+        total_value: total_value
+      }
+    end
+  end
 end
