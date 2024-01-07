@@ -4,18 +4,19 @@ defmodule Telephony.Core.SubscriberTest do
   # alias Telephony.Core.Constants
   alias Telephony.Core.Postpaid
   alias Telephony.Core.Prepaid
+  alias Telephony.Core.Subscriber
   # alias Telephony.Core.Recharge
 
   setup do
     postpaid =
-      %Telephony.Core.Subscriber{
+      %Subscriber{
         full_name: "Stoyan",
         phone_number: "0887229884",
         subscriber_type: %Postpaid{spent: 10}
       }
 
     prepaid =
-      %Telephony.Core.Subscriber{
+      %Subscriber{
         full_name: "Stoyan2",
         phone_number: "0887229885",
         subscriber_type: %Prepaid{credits: 10, recharges: []}
@@ -34,9 +35,9 @@ defmodule Telephony.Core.SubscriberTest do
     }
 
     # When
-    result = Telephony.Core.Subscriber.new(payload)
+    result = Subscriber.new(payload)
     # Then
-    expect = %Telephony.Core.Subscriber{
+    expect = %Subscriber{
       full_name: "Stoyan",
       phone_number: "0887229884",
       subscriber_type: %Prepaid{credits: 0, recharges: []}
@@ -56,7 +57,7 @@ defmodule Telephony.Core.SubscriberTest do
     }
 
     # When
-    result = Telephony.Core.Subscriber.new(payload)
+    result = Subscriber.new(payload)
     # Then
     expect = %Telephony.Core.Subscriber{
       full_name: "Stoyan",
