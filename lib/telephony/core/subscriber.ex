@@ -38,4 +38,8 @@ defmodule Telephony.Core.Subscriber do
       %{subscriber_type: subscriber_type} -> %{subscriber | subscriber_type: subscriber_type}
     end
   end
+
+  def print_invoice(subscriber, start_date, end_date) do
+    Subscriber.print_invoice(subscriber.subscriber_type, subscriber.calls, start_date, end_date)
+  end
 end
