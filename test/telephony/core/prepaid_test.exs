@@ -59,7 +59,7 @@ defmodule Telephony.Core.PrepaidTest do
     result = Subscriber.make_a_recharge(subscriber.subscriber_type, value, date)
     # Then
     expect = %{
-      subscriber_type: %Telephony.Core.Prepaid{
+      subscriber_type: %Prepaid{
         credits: 110,
         recharges: [
           %Recharge{

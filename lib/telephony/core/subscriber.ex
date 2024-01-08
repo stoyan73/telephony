@@ -24,4 +24,18 @@ defmodule Telephony.Core.Subscriber do
     payload = %{payload | subscriber_type: %Postpaid{}}
     struct(__MODULE__, payload)
   end
+
+  def make_a_call(subscriber, time_spent, date) do
+    case Subscriber.make_a_call(subscriber.subscriber_type, time_spent, date) do
+      {:error, message} -> {:error, message}
+      {type, call} -> %{subscriber | subscriber_type: type, calls: subscriber.calls ++ [call]}
+    end
+  end
+
+  def make_a_recharge(subscriber, value, date) do
+    case Subscriber.make_a_recharge(subscriber.subscriber_type, value, date) do
+      {:error, message} -> {:error, message}
+      %{subscriber_type: subscriber_type} -> %{subscriber | subscriber_type: subscriber_type}
+    end
+  end
 end
