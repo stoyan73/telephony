@@ -59,6 +59,22 @@ defmodule Telephony.Core do
     end)
   end
 
+  def print_invoice(subscribers, phone, date_from, date_to) do
+    subscribers
+    |> search_subscriber(phone)
+    |> then(fn subscriber ->
+      if is_nil(subscriber) do
+        subscribers
+      else
+        Subscriber.print_invoice(subscriber, date_from, date_to)
+      end
+    end)
+  end
+
+  def print_invoices(subscribers, date_from, date_to) do
+    Enum.map(subscribers, &Subscriber.print_invoice(&1, date_from, date_to))
+  end
+
   defp update_subscribers(_subscribers, {:error, msg}) do
     {:error, msg}
   end
