@@ -26,7 +26,6 @@ defmodule Telephony.Core.SubscriberTest do
     %{postpaid: postpaid, prepaid: prepaid}
   end
 
-  @tag run: true
   test "create a prepaid subscriber" do
     # Given
     payload = %{
@@ -48,7 +47,6 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
   test "create a postpaid subscriber" do
     # Given
     payload = %{
@@ -69,7 +67,6 @@ defmodule Telephony.Core.SubscriberTest do
     # finall
     assert expect == result
   end
-
   @tag run: true
   test "make a postpaid call", %{postpaid: postpaid} do
     # Given
@@ -93,7 +90,6 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
   test "make a prepaid call", %{prepaid: prepaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -122,7 +118,6 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
   test "make a prepaid call without credits", %{prepaid: prepaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -136,7 +131,6 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
   test "make a recharge prepaid", %{prepaid: prepaid} do
     # Given
     date = NaiveDateTime.utc_now()
@@ -164,7 +158,6 @@ defmodule Telephony.Core.SubscriberTest do
     assert expect == result
   end
 
-  @tag run: true
   test "print prepaid invoice" do
     # given
     start_date = ~D[2023-12-15]
