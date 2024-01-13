@@ -32,47 +32,43 @@ defmodule Telephony.Core do
   end
 
   def make_a_call(subscribers, phone, time_spent, date) do
-    subscribers
-    |> search_subscriber(phone)
-    |> then(fn subscriber ->
-      if is_nil(subscriber) do
-        subscribers
-      else
-        subscribers = List.delete(subscribers, subscriber)
-        result = Subscriber.make_a_call(subscriber, time_spent, date)
-        update_subscribers(subscribers, result)
-      end
-    end)
+    perform = fn subscriber ->
+      subscribers = List.delete(subscribers, subscriber)
+      result = Subscriber.make_a_call(subscriber, time_spent, date)
+      update_subscribers(subscribers, result)
+    end
+
+    execute_operation(subscribers, phone, perform)
   end
 
   def make_recharge(subscribers, phone, value, date) do
-    subscribers
-    |> search_subscriber(phone)
-    |> then(fn subscriber ->
-      if is_nil(subscriber) do
-        subscribers
-      else
-        subscribers = List.delete(subscribers, subscriber)
-        result = Subscriber.make_a_recharge(subscriber, value, date)
-        update_subscribers(subscribers, result)
-      end
-    end)
+    recharge = fn subscriber ->
+      subscribers = List.delete(subscribers, subscriber)
+      result = Subscriber.make_a_recharge(subscriber, value, date)
+      update_subscribers(subscribers, result)
+    end
+
+    execute_operation(subscribers, phone, recharge)
   end
 
   def print_invoice(subscribers, phone, date_from, date_to) do
-    subscribers
-    |> search_subscriber(phone)
-    |> then(fn subscriber ->
-      if is_nil(subscriber) do
-        subscribers
-      else
-        Subscriber.print_invoice(subscriber, date_from, date_to)
-      end
-    end)
+      execute_operation(subscribers, phone, &Subscriber.print_invoice(&1, date_from, date_to))
   end
 
   def print_invoices(subscribers, date_from, date_to) do
     Enum.map(subscribers, &Subscriber.print_invoice(&1, date_from, date_to))
+  end
+
+  defp execute_operation(subscribers, phone, fun) do
+    subscribers
+    |> search_subscriber(phone)
+    |> then(fn subscriber ->
+      if is_nil(subscriber) do
+        subscribers
+      else
+        fun.(subscriber)
+      end
+    end)
   end
 
   defp update_subscribers(_subscribers, {:error, msg}) do
